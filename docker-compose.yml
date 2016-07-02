@@ -1,0 +1,31 @@
+version: '2'
+services:
+  redmine:
+    image: redmine
+    ports:
+      - 3000:3000
+    environment:
+      POSTGRES_PORT_5432_TCP: postgres
+      POSTGRES_ENV_POSTGRES_USER: redmine
+      POSTGRES_ENV_POSTGRES_PASSWORD: secret
+      POSTGRES_ENV_POSTGRES_DB: redmine
+    volumes:
+      - redmine_data:/usr/src/redmine/files
+    depends_on:
+      - postgres
+    links:
+      - "postgres:postgres"
+    networks:
+      - default
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: redmine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  redmine_data:
+    driver: local
+  postgres_data:
+    driver: local
